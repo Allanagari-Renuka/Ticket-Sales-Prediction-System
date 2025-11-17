@@ -1,0 +1,204 @@
+Build a full production-ready responsive website and mobile app based on the provided PPT "Project - 1: Total Sales Prediction for Cinema Tickets". The product must implement a dynamic pricing & total sales prediction system for cinema tickets using ML, plus a complete front-end, back-end, admin dashboard, mobile app, CI/CD, tests and deployment instructions.
+
+High-level goals
+
+Public website for users to view movies, showtimes, seats, prices, and buy tickets.
+
+Mobile app (iOS & Android) with same features, fully responsive UI and offline-friendly behavior.
+
+Admin dashboard to manage movies, shows, base price, occupancy, view ML predictions, and override dynamic pricing.
+
+Machine learning microservice that predicts total sales and suggests dynamic ticket prices (supports linear and non-linear regression).
+
+Secure REST API + token-based auth; payments simulated or integrated with a sandbox (e.g., Stripe test mode).
+
+Containerized apps with Docker and deployment instructions (e.g., Docker Compose, optional Kubernetes helm).
+
+Tech stack (recommended; you may substitute but keep API boundaries):
+
+Frontend web: Next.js (React) + Tailwind CSS, responsive design system.
+
+Mobile: React Native (Expo) or Flutter (specify: React Native preferred to reuse React code).
+
+Backend: Node.js + Express (or NestJS) for REST API.
+
+ML service: Python (FastAPI) exposing prediction endpoints. Model code using scikit-learn + joblib (for linear regression and polynomial/non-linear regression) and training scripts.
+
+Database: PostgreSQL (production) + Redis (caching). Optionally MongoDB for flexible data.
+
+Auth: JWT + refresh tokens, role-based (user, admin).
+
+CI/CD: GitHub Actions workflows (lint/test/build/image push).
+
+Containerization: Docker + Docker Compose.
+
+Tests: Jest + React Testing Library for frontend, Mocha/Jest for backend, PyTest for ML service.
+
+Monitoring: Basic logging, and Prometheus-friendly metrics endpoints (optional).
+
+Functional requirements — Website & Mobile App
+
+Public pages:
+
+Home: Featured movies, upcoming shows, top predictions (sales forecast).
+
+Movie detail: Poster, synopsis, cast, duration, showtimes (list by date), seat map.
+
+Show booking flow: select showtime → choose seats → see live ticket price (from pricing API) → payment → booking confirmation + e-ticket.
+
+Search & filter: by movie name, genre, date, language.
+
+User account: signup/login, bookings history, profile.
+
+Admin dashboard:
+
+CRUD for movies, theaters, screens, showtimes.
+
+View occupancy / historical sales per show.
+
+Trigger ML retrain with dataset upload.
+
+Display ML predictions: expected tickets sold, recommended dynamic pricing change (percentage).
+
+Manual override pricing per show.
+
+Audit logs for price changes.
+
+Booking & payment:
+
+Prevent double-booking of same seat.
+
+Reservation timeout (e.g., hold seats 10 minutes).
+
+Payment options: mock UPI/COD/credit-card flow; integrate Stripe test mode for card payments.
+
+Dynamic pricing & ML:
+
+ML microservice endpoint /predict accepting features (show_id, base_price, screen_capacity, date_time, historical_occupancy, weekday/holiday flag, location, weather optional, promotional_flag).
+
+Return: predicted_total_tickets, confidence, recommended_price (suggested dynamic price).
+
+API for GET /pricing/show/:id to return current price (base price adjusted by ML recommendation + admin overrides).
+
+Support batch prediction for admin analytics.
+
+Data & preprocessing:
+
+Normalization pipeline for numeric features.
+
+Feature engineering: occupancy rate, days-to-show, time-of-day bucket, weekend/weekday, holiday flag.
+
+Save training metadata and model versioning.
+
+Security:
+
+Input validation & sanitization.
+
+Rate limiting on public endpoints.
+
+Secure storage of secrets (use .env and note vault recommendations).
+
+Performance & UX:
+
+Responsive design across breakpoints (mobile / tablet / desktop).
+
+Lazy load images/posters; server-side rendering for SEO with Next.js.
+
+Accessibility (WCAG basic compliance).
+
+Analytics & logging:
+
+Track key metrics: conversion rate, no. of tickets sold per show, revenue, model performance (RMSE/MAE), A/B test flags for pricing.
+
+Developer & deployment:
+
+Provide Dockerfiles for each service; a docker-compose.yml that brings up web, backend, ml-service, and db.
+
+Provide GitHub Actions for CI: run tests, lint, build images.
+
+Provide README with setup & sample env variables and deployment steps for a VPS or cloud (AWS ECS/EKS or DigitalOcean).
+
+Deliverables:
+
+Full source code repo with clear monorepo or microservice layout.
+
+SQL schema + sample seed data (including synthetic dataset for ML training reflecting features in PPT).
+
+Trained model artifact (or training script with commands).
+
+Postman collection or OpenAPI spec for backend and ML service.
+
+End-to-end tests (booking flow smoke test).
+
+Developer docs: how to run locally, how to retrain model, how to deploy.
+
+API design (minimum endpoints)
+
+POST /auth/signup, POST /auth/login, POST /auth/refresh
+
+GET /movies, GET /movies/:id
+
+GET /shows?movie_id=&date=, GET /shows/:id/seats
+
+POST /booking (body: user_id, show_id, seats[], payment_method)
+
+GET /booking/:id
+
+GET /pricing/show/:id -> returns { current_price, source: 'ml|override|base', recommended_price, model_version }
+
+POST /admin/movies, PUT /admin/movies/:id, etc.
+
+POST /ml/predict (features)
+
+POST /ml/train (admin trigger, optional dataset upload)
+
+ML microservice details
+
+Accept CSV or JSON training data. Implement pipeline:
+
+Data cleaning (missing values).
+
+Normalization / scaling.
+
+Feature encoding (one-hot for categorical).
+
+Model train: linear regression baseline; polynomial regression (or RandomForest/GradientBoosting) as non-linear option.
+
+Evaluate and log metrics: RMSE, MAE, R²; save best model artifact with version.
+
+Expose /predict endpoint returning prediction + explanation (feature importances or coefficients).
+
+Provide sample notebooks or scripts to reproduce training.
+
+Containerize model with a minimal FastAPI server that loads model artifact and serves predictions with low latency.
+
+UI/UX guidance (deliverable)
+
+Provide Figma frames or simple component spec:
+
+Color palette, typography, spacing scale.
+
+Components: MovieCard, ShowCard, SeatMap, BookingModal, AdminDataTable, PredictionCard.
+
+Accessibility: tab order, aria labels on seat buttons.
+
+Acceptance criteria — minimum
+
+User can search movies, pick showtime, select seats, pay in sandbox, receive booking confirmation and e-ticket.
+
+Admin can view ML predictions and apply price override.
+
+ML /predict returns plausible values given sample data; model reproducible via provided training script.
+
+Frontend passes basic end-to-end booking smoke test.
+
+Project builds via Docker Compose and all services come up. /repo
+  /web (Next.js)
+  /mobile (React Native - Expo)
+  /api (Node/Express)
+  /ml (FastAPI + model scripts)
+  /infra (docker-compose.yml, k8s/helm optional)
+  /docs (API spec, setup, run, deploy)
+Quality & tests
+
+Provide unit tests for backend routes, ML unit tests for preprocessing, and a single e2e test for booking using Playwright or Cypress.
