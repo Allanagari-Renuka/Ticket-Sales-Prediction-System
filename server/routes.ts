@@ -5,7 +5,7 @@ import express from "express";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { insertUserSchema, loginSchema, insertMovieSchema, insertTheaterSchema, insertScreenSchema, insertShowtimeSchema, insertBookingSchema } from "@shared/schema";
+import { insertUserSchema, loginSchema, insertMovieSchema, insertTheaterSchema, insertScreenSchema, insertShowtimeSchema, insertBookingSchema } from "../shared/schema";
 import { randomUUID } from "crypto";
 
 const JWT_SECRET = process.env.SESSION_SECRET || "your-secret-key-change-in-production";

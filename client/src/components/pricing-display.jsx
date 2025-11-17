@@ -1,14 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Sparkles } from "lucide-react";
 
-interface PricingDisplayProps {
-  basePrice: number;
-  currentPrice: number;
-  source: "base" | "ml" | "override";
-  showDetails?: boolean;
-}
-
-export function PricingDisplay({ basePrice, currentPrice, source, showDetails = false }: PricingDisplayProps) {
+export function PricingDisplay({ basePrice, currentPrice, source, showDetails = false }) {
   const hasDiscount = currentPrice < basePrice;
   const discountPercent = hasDiscount ? Math.round(((basePrice - currentPrice) / basePrice) * 100) : 0;
 

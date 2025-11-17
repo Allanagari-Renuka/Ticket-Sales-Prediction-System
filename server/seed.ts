@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { users, movies, theaters, screens, showtimes } from "@shared/schema";
+import { users, movies, theaters, screens, showtimes } from "../shared/schema";
 import bcrypt from "bcryptjs";
 
 async function seed() {

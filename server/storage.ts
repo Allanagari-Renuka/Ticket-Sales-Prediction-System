@@ -19,7 +19,7 @@ import {
   type Booking,
   type InsertBooking,
   type PricingHistory,
-} from "@shared/schema";
+} from "../shared/schema";
 import { db } from "./db";
 import { eq, and, gte, desc, sql } from "drizzle-orm";
 
@@ -77,6 +77,54 @@ export class DatabaseStorage implements IStorage {
     };
   }
 
+  // Mock data for development when database is not available
+  private getMockMovies(): Movie[] {
+    return [
+      {
+        id: "1",
+        title: "Stellar Odyssey",
+        synopsis: "In a distant galaxy, a crew of explorers embarks on a journey to find a new home for humanity. As they traverse uncharted space, they encounter ancient civilizations, face cosmic dangers, and discover secrets that could change the fate of their species forever.",
+        posterUrl: "/attached_assets/generated_images/Sci-fi_movie_poster_462d13fe.png",
+        backdropUrl: "/attached_assets/generated_images/Sci-fi_movie_poster_462d13fe.png",
+        genre: ["Sci-Fi", "Adventure", "Drama"],
+        language: "English",
+        duration: 148,
+        cast: ["Alex Rivera", "Maya Chen", "James Wilson", "Sarah Thompson"],
+        rating: "4.5",
+        releaseDate: new Date("2025-03-15"),
+        featured: true,
+      },
+      {
+        id: "2",
+        title: "Urban Strike",
+        synopsis: "When a rogue terrorist organization threatens to destroy the city, an elite special forces team must race against time to prevent catastrophe. With high-stakes action sequences and explosive confrontations, this thriller keeps you on the edge of your seat.",
+        posterUrl: "/attached_assets/generated_images/Action_movie_poster_240bae26.png",
+        backdropUrl: "/attached_assets/generated_images/Action_movie_poster_240bae26.png",
+        genre: ["Action", "Thriller", "Crime"],
+        language: "English",
+        duration: 132,
+        cast: ["Marcus Kane", "Elena Rodriguez", "Tom Bradley", "Lisa Park"],
+        rating: "4.2",
+        releaseDate: new Date("2025-03-20"),
+        featured: true,
+      },
+      {
+        id: "3",
+        title: "The Last Symphony",
+        synopsis: "A renowned composer loses his hearing and must find new ways to create music. This emotional journey explores the power of art, resilience, and the human spirit's ability to overcome seemingly insurmountable obstacles.",
+        posterUrl: null,
+        backdropUrl: null,
+        genre: ["Drama", "Music", "Biography"],
+        language: "English",
+        duration: 125,
+        cast: ["David Morrison", "Emma Stone", "Robert Chen"],
+        rating: "4.7",
+        releaseDate: new Date("2025-04-01"),
+        featured: true,
+      },
+    ];
+  }
+
   // Users
   async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
@@ -95,20 +143,38 @@ export class DatabaseStorage implements IStorage {
 
   // Movies
   async getAllMovies(): Promise<Movie[]> {
-    const result = await db.select().from(movies).orderBy(desc(movies.releaseDate));
-    return result.map(m => this.normalizeMovie(m));
+    try {
+      const result = await db.select().from(movies).orderBy(desc(movies.releaseDate));
+      return result.map(m => this.normalizeMovie(m));
+    } catch (error) {
+      // Fallback to mock data if database is not available
+      console.warn("Database not available, using mock movie data");
+      return this.getMockMovies();
+    }
   }
 
   async getMovie(id: string): Promise<Movie | undefined> {
-    const [movie] = await db.select().from(movies).where(eq(movies.id, id));
-    return movie ? this.normalizeMovie(movie) : undefined;
+    try {
+      const [movie] = await db.select().from(movies).where(eq(movies.id, id));
+      return movie ? this.normalizeMovie(movie) : undefined;
+    } catch (error) {
+      // Fallback to mock data if database is not available
+      console.warn("Database not available, using mock movie data");
+      return this.getMockMovies().find(m => m.id === id);
+    }
   }
 
   async getFeaturedMovies(): Promise<Movie[]> {
-    const result = await db.select().from(movies)
-      .where(eq(movies.featured, true))
-      .limit(8);
-    return result.map(m => this.normalizeMovie(m));
+    try {
+      const result = await db.select().from(movies)
+        .where(eq(movies.featured, true))
+        .limit(8);
+      return result.map(m => this.normalizeMovie(m));
+    } catch (error) {
+      // Fallback to mock data if database is not available
+      console.warn("Database not available, using mock movie data");
+      return this.getMockMovies().filter(m => m.featured);
+    }
   }
 
   async createMovie(movie: InsertMovie): Promise<Movie> {

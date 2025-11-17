@@ -1,14 +1,6 @@
 import { cn } from "@/lib/utils";
 
-interface SeatButtonProps {
-  row: string;
-  number: number;
-  status: "available" | "selected" | "booked";
-  type?: "regular" | "vip";
-  onClick?: () => void;
-}
-
-export function SeatButton({ row, number, status, type = "regular", onClick }: SeatButtonProps) {
+export function SeatButton({ row, number, status, type = "regular", onClick }) {
   const isDisabled = status === "booked";
 
   return (

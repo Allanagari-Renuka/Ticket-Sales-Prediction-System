@@ -16,10 +16,10 @@ export function PublicHeader() {
         <div className="flex h-16 items-center justify-between gap-4">
           {/* Logo */}
           <Link href="/" data-testid="link-home">
-            <a className="flex items-center gap-2 hover-elevate rounded-md px-3 py-2 -ml-3">
+            <div className="flex items-center gap-2 hover-elevate rounded-md px-3 py-2 -ml-3 cursor-pointer">
               <Film className="h-6 w-6 text-primary" />
               <span className="font-display font-bold text-xl">CinemaMax</span>
-            </a>
+            </div>
           </Link>
 
           {/* Search Bar - Desktop */}
@@ -38,18 +38,18 @@ export function PublicHeader() {
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center gap-2">
             <Link href="/" data-testid="link-movies">
-              <a className={`px-4 py-2 rounded-md text-sm font-medium transition-colors hover-elevate ${
+              <div className={`px-4 py-2 rounded-md text-sm font-medium transition-colors hover-elevate cursor-pointer ${
                 location === "/" ? "bg-accent" : ""
               }`}>
                 Movies
-              </a>
+              </div>
             </Link>
             <Link href="/bookings" data-testid="link-bookings">
-              <a className={`px-4 py-2 rounded-md text-sm font-medium transition-colors hover-elevate ${
+              <div className={`px-4 py-2 rounded-md text-sm font-medium transition-colors hover-elevate cursor-pointer ${
                 location === "/bookings" ? "bg-accent" : ""
               }`}>
                 My Bookings
-              </a>
+              </div>
             </Link>
           </nav>
 
@@ -107,14 +107,14 @@ export function PublicHeader() {
               </div>
             </div>
             <Link href="/" data-testid="link-movies-mobile">
-              <a className="block px-3 py-2 rounded-md text-sm font-medium hover-elevate">
+              <div className="block px-3 py-2 rounded-md text-sm font-medium hover-elevate cursor-pointer">
                 Movies
-              </a>
+              </div>
             </Link>
             <Link href="/bookings" data-testid="link-bookings-mobile">
-              <a className="block px-3 py-2 rounded-md text-sm font-medium hover-elevate">
+              <div className="block px-3 py-2 rounded-md text-sm font-medium hover-elevate cursor-pointer">
                 My Bookings
-              </a>
+              </div>
             </Link>
             <div className="pt-2 flex flex-col gap-2">
               {isAuthenticated ? (

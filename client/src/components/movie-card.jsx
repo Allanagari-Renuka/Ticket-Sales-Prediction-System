@@ -3,13 +3,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Star, Clock } from "lucide-react";
 import { Link } from "wouter";
-import type { Movie } from "@shared/schema";
 
-interface MovieCardProps {
-  movie: Movie;
-}
-
-export function MovieCard({ movie }: MovieCardProps) {
+export function MovieCard({ movie }) {
   const genres = typeof movie.genre === 'string' ? JSON.parse(movie.genre) : movie.genre;
   const genreArray = Array.isArray(genres) ? genres : [genres];
 
@@ -39,14 +34,14 @@ export function MovieCard({ movie }: MovieCardProps) {
             </div>
           )}
         </div>
-        
+
         <CardContent className="p-4 flex-1 flex flex-col">
           <h3 className="font-display font-semibold text-lg mb-2 line-clamp-2" data-testid={`text-title-${movie.id}`}>
             {movie.title}
           </h3>
-          
+
           <div className="flex flex-wrap gap-2 mb-3">
-            {genreArray.slice(0, 2).map((genre: string) => (
+            {genreArray.slice(0, 2).map((genre) => (
               <Badge key={genre} variant="secondary" className="text-xs" data-testid={`badge-genre-${movie.id}`}>
                 {genre}
               </Badge>
